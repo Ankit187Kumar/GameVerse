@@ -818,7 +818,7 @@ export default function App() {
   }, [handPlayActive]);
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-slate-100 p-0 overflow-hidden">
+    <div className="grid place-items-center h-screen w-screen bg-slate-100 overflow-hidden">
       {/* 1080x1920 9:16 Portrait Canvas (Scales to fit screen while maintaining ratio) */}
       <div className="kiosk-aspect relative bg-white flex flex-col overflow-hidden shadow-2xl border border-slate-200">
         {/* Content Screens */}

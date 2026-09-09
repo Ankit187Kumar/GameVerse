@@ -11,19 +11,24 @@
 
 /* Kiosk Specific Portrait Screen Scaling Rules */
 .kiosk-aspect {
-  width: 100%;
-  height: 100%;
-  max-width: 100vw;
-  max-height: 100vh;
+  /* Portrait / small screens: fill the full viewport */
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
 }
 
-@media (min-width: 640px) and (min-aspect-ratio: 563/1000) {
+/* On any screen wider than 9:16 portrait ratio, show as a
+   centered portrait kiosk panel floating on the background */
+@media (min-aspect-ratio: 9/16) {
   .kiosk-aspect {
     height: 95vh;
-    width: auto;
+    /* Explicit computed width — avoids ambiguous flex-item auto sizing */
+    width: calc(95vh * 9 / 16);
     aspect-ratio: 9 / 16;
+    flex-shrink: 0;
+    align-self: center;
     border-radius: 1.5rem;
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     border: 1px solid #e2e8f0;
