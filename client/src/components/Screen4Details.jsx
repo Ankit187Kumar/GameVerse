@@ -37,7 +37,7 @@ const Screen4Details = ({ capturedPhoto, selectedFrame, onUserRegistered, regist
     if (!formData.name || !formData.phone || !formData.email) { setError('Please fill in all fields.'); return; }
     setLoading(true); setError('');
     try {
-      const response = await fetch(`http://localhost:5000/api/users/${currentId}`, {
+      const response = await fetch(`/api/users/${currentId}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData),
       });
       if (!response.ok) throw new Error('Failed to update details');

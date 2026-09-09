@@ -7,5 +7,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true, // Listen on all network addresses
+    proxy: {
+      '/api': 'http://localhost:5000',
+      '/download.html': 'http://localhost:5000',
+    },
   }
 })

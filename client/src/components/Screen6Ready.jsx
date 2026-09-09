@@ -4,9 +4,9 @@ import { Share2, Play, Download, Home, Film, Sparkles } from 'lucide-react';
 
 const Screen6Ready = ({ registeredId, videoUrl, onReset }) => {
   const videoRef = useRef(null);
-  const serverHost = window.location.hostname;
-  const downloadUrl = `http://${serverHost}:5000/download.html?id=${registeredId}`;
-  const absoluteVideoUrl = videoUrl ? `http://${serverHost}:5000${videoUrl}` : '';
+  const origin = window.location.origin;
+  const downloadUrl = `${origin}/download.html?id=${registeredId}`;
+  const absoluteVideoUrl = videoUrl ? `${origin}${videoUrl}` : '';
 
   const handleWatchAgain = () => { if (videoRef.current) { videoRef.current.currentTime = 0; videoRef.current.play(); } };
   const handleDownload = () => {

@@ -42,7 +42,7 @@ const Screen5Quiz = ({ registeredId, onVideoComplete, onNext }) => {
   const handleOptionClick = (key) => {
     setSelectedOption(key);
     if (registeredId) {
-      fetch(`http://localhost:5000/api/users/${registeredId}/quiz`, {
+      fetch(`/api/users/${registeredId}/quiz`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answer: key }),
       }).catch(e => console.error(e));

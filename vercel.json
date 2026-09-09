@@ -1,0 +1,14 @@
+{
+  "buildCommand": "npm install --prefix client && npm run build --prefix client",
+  "outputDirectory": "client/dist",
+  "installCommand": "npm install --prefix server",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60,
+      "includeFiles": "server/public/frames/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.js" }
+  ]
+}

@@ -25,9 +25,23 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  photoData: {
+    type: Buffer,
+  },
+  photoContentType: {
+    type: String,
+    default: 'image/jpeg',
+  },
   videoUrl: {
     type: String,
     default: '',
+  },
+  videoData: {
+    type: Buffer,
+  },
+  videoContentType: {
+    type: String,
+    default: 'video/mp4',
   },
   status: {
     type: String,

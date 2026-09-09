@@ -1,5 +1,6 @@
-const serverHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-const API_BASE = `http://${serverHost}:5000/api/users`;
+// Same-origin API — works both in local dev (Vite proxy, see vite.config.js)
+// and in production where client + API are deployed together on Vercel.
+const API_BASE = '/api/users';
 
 export const registerUser = async (userData) => {
   try {

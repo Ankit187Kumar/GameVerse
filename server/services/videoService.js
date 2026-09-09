@@ -3,11 +3,20 @@ const fs = require('fs');
 const path = require('path');
 const Replicate = require('replicate');
 
+// Bundled static ffmpeg binary — works both locally and inside Vercel's
+// serverless (Lambda) runtime, where there is no system-installed ffmpeg.
+let ffmpegBinaryPath = 'ffmpeg';
+try {
+  ffmpegBinaryPath = require('ffmpeg-static');
+} catch (e) {
+  console.warn('ffmpeg-static not found, falling back to system "ffmpeg" on PATH.');
+}
+
 // Helper to run shell commands (FFmpeg)
 const runCommand = (command) => {
   return new Promise((resolve, reject) => {
     console.log(`Executing: ${command}`);
-    exec(command, (error, stdout, stderr) => {
+    exec(command, { maxBuffer: 1024 * 1024 * 20 }, (error, stdout, stderr) => {
       if (error) {
         console.error(`Exec error: ${error.message}`);
         console.error(`Stderr: ${stderr}`);
@@ -19,12 +28,12 @@ const runCommand = (command) => {
   });
 };
 
-// Check if FFmpeg is installed
+// Check if FFmpeg is available (bundled binary or system PATH)
 const checkFFmpeg = () => {
   return new Promise((resolve) => {
-    exec('ffmpeg -version', (error) => {
+    exec(`"${ffmpegBinaryPath}" -version`, (error) => {
       if (error) {
-        console.warn('WARNING: FFmpeg is not installed or not in system PATH. Local video generation will fallback to mock video.');
+        console.warn('WARNING: FFmpeg is not available. Local video generation will fallback to mock video.');
         resolve(false);
       } else {
         resolve(true);
@@ -66,10 +75,10 @@ const generateLocalVideo = async (photoPath, framePath, outputPath, audioPath = 
   
   let cmd = '';
   if (audioPath && fs.existsSync(audioPath)) {
-    cmd = `ffmpeg -y -loop 1 -i "${photoPath}" -i "${framePath}" -i "${audioPath}" -filter_complex "[0:v]scale=1080:1920,zoompan=z='zoom+0.0015':d=150:s=1080x1920:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'[bg]; [bg][1:v]overlay=0:0[outv]" -map "[outv]" -map 2:a -c:v libx264 -t 5 -pix_fmt yuv420p -shortest "${outputPath}"`;
+    cmd = `"${ffmpegBinaryPath}" -y -loop 1 -i "${photoPath}" -i "${framePath}" -i "${audioPath}" -filter_complex "[0:v]scale=1080:1920,zoompan=z='zoom+0.0015':d=150:s=1080x1920:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'[bg]; [bg][1:v]overlay=0:0[outv]" -map "[outv]" -map 2:a -c:v libx264 -t 5 -pix_fmt yuv420p -shortest "${outputPath}"`;
   } else {
     // Silent video
-    cmd = `ffmpeg -y -loop 1 -i "${photoPath}" -i "${framePath}" -filter_complex "[0:v]scale=1080:1920,zoompan=z='zoom+0.0015':d=150:s=1080x1920:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'[bg]; [bg][1:v]overlay=0:0" -c:v libx264 -t 5 -pix_fmt yuv420p "${outputPath}"`;
+    cmd = `"${ffmpegBinaryPath}" -y -loop 1 -i "${photoPath}" -i "${framePath}" -filter_complex "[0:v]scale=1080:1920,zoompan=z='zoom+0.0015':d=150:s=1080x1920:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'[bg]; [bg][1:v]overlay=0:0" -c:v libx264 -t 5 -pix_fmt yuv420p "${outputPath}"`;
   }
 
   await runCommand(cmd);
@@ -123,7 +132,7 @@ const generateAIVideo = async (photoUrl, framePath, outputPath, replicateToken) 
   if (hasFFmpeg) {
     // Overlay the frame PNG on the AI generated video
     // AI video might be landscape or small, so we scale it to fit 1080x1920 and then overlay frame
-    const cmd = `ffmpeg -y -i "${tempAiVideoPath}" -i "${framePath}" -filter_complex "[0:v]scale=1080:1920[bg]; [bg][1:v]overlay=0:0" -c:v libx264 -pix_fmt yuv420p "${outputPath}"`;
+    const cmd = `"${ffmpegBinaryPath}" -y -i "${tempAiVideoPath}" -i "${framePath}" -filter_complex "[0:v]scale=1080:1920[bg]; [bg][1:v]overlay=0:0" -c:v libx264 -pix_fmt yuv420p "${outputPath}"`;
     await runCommand(cmd);
     
     // Clean up temp file
