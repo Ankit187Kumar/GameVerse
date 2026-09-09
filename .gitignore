@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment variables (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# Build output
+client/dist/
+
+# Generated/uploaded runtime files
+server/public/uploads/*
+!server/public/uploads/.gitkeep
+server/public/generated/*
+!server/public/generated/.gitkeep
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
