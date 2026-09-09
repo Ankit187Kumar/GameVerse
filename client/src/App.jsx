@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Flag, Users, Trophy, Settings, Target, Zap, Grid, Activity, Skull, X, ChevronRight, Home, RotateCcw, List, Heart, Hand } from 'lucide-react';
 import HandCursor from './components/HandCursor';
-import { getHandState } from './hooks/useHandTracker';
+import { getHandState, setBackGestureHandler } from './hooks/useHandTracker';
 
 const Button3D = ({ color = 'blue', children, onClick, className = '', icon: Icon }) => {
   const colorMap = {
@@ -760,11 +760,13 @@ const PlayAgainHome = ({ onNavigate }) => (
 );
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('Splash');
+  const [screenHistory, setScreenHistory] = useState(['Splash']);
   const [mode, setMode] = useState('catch');
   const [finalScore, setFinalScore] = useState({ score: 0, combo: 0, accuracy: 0 });
 
-  const handleNavigate = (screen) => setCurrentScreen(screen);
+  const currentScreen = screenHistory[screenHistory.length - 1];
+  const handleNavigate = (screen) => setScreenHistory((prev) => [...prev, screen]);
+  const handleBack = () => setScreenHistory((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
 
   const renderGame = () => {
     const props = { onNavigate: handleNavigate, setFinalScore };
@@ -808,6 +810,12 @@ export default function App() {
   };
 
   const handPlayActive = currentScreen === 'Countdown' || currentScreen === 'GamePlay';
+
+  useEffect(() => {
+    if (!handPlayActive) return undefined;
+    setBackGestureHandler(handleBack);
+    return () => setBackGestureHandler(null);
+  }, [handPlayActive]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-slate-100 p-0 overflow-hidden">
