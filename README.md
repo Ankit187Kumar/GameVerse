@@ -1,79 +1,139 @@
 # AI Photo to Video Kiosk Application (1080x1920)
 
-This is an interactive 5-screen Photo-to-Video kiosk application designed for a 1080x1920 (9:16 portrait) display, such as a Holobox or tablet kiosk. The application captures a user's photo using a webcam, overlays a custom theme frame, collects user details, saves them in MongoDB, keeps the user engaged with a multiple-choice quiz while the video generates, and displays a QR code to download the final MP4 video.
+🔗 **Live Demo:** https://gameverse-opal.vercel.app/
+
+An interactive Photo-to-Video kiosk application designed for a **1080x1920 (9:16 portrait)** display, such as a Holobox, tablet, or exhibition kiosk.
+
+The application captures a user's photo, applies a custom theme frame, collects user details, stores them in MongoDB, provides a multiple-choice quiz while the video generates, and displays a QR code to view and download the final MP4 video.
 
 ---
 
 ## 🛠️ Prerequisites
 
-Before running the application, ensure you have the following installed on your machine:
+* **Node.js** v18 or higher
+* **MongoDB** local installation or MongoDB Atlas
+* **FFmpeg** for local video generation
 
-1. **Node.js** (v18 or higher recommended)
-2. **MongoDB** (A running local MongoDB instance or a MongoDB Atlas URI)
-3. **FFmpeg** (Required for the fast local video compilation. If missing, the app will run in fallback mock mode)
-   - **Windows Installation**: Download builds from [Gyan.dev](https://www.gyan.dev/ffmpeg/builds/) (get `ffmpeg-git-full.7z`), extract, copy the `bin/` folder path, search for "Edit the system environment variables" in Windows, edit the environment variable `Path`, click **New**, and paste the bin path. Restart your terminal.
+For Windows, install FFmpeg and add its `bin` folder to the system `Path`.
 
 ---
 
-## ⚙️ Configuration Setup
+## ⚙️ Configuration
 
-Create/configure the `.env` file at the root of the project folder:
+Create a `.env` file in the project root:
 
 ```env
-# Port for the Backend Express Server
 PORT=5000
 
-# MongoDB Connection String (Replace <db_password> with your Atlas password)
 MONGODB_URI=mongodb+srv://neeshu:<db_password>@neeshu.cwxzomm.mongodb.net/photobooth?retryWrites=true&w=majority&appName=neeshu
 
-# Video Generation Mode: 'local' (Fastest) or 'AI' (Cloud-based Replicate SVD)
 VIDEO_GENERATION_MODE=local
 
-# Replicate API Token (Required ONLY for 'AI' mode)
 REPLICATE_API_TOKEN=your_replicate_token_here
 
-# Local URL configurations (No change needed)
 CLIENT_URL=http://localhost:5173
 SERVER_URL=http://localhost:5000
 ```
 
+> Keep your `.env` file private and never commit API keys to GitHub.
+
 ---
 
-## 🚀 How to Run the Application
+## 🚀 How to Run
 
-You can install all dependencies and run both the **Frontend** and **Backend** concurrently using single root commands:
+### Install Dependencies
 
-### Step 1: Install Dependencies
-Run the setup command from the **root folder** of the project to install all modules for the root, frontend, and backend:
 ```bash
 npm run setup
 ```
 
-### Step 2: Start Both Servers
-Run the dev command from the **root folder** to start the Express backend server (port 5000) and the React Vite dev server (port 5173) simultaneously:
+### Start Frontend & Backend
+
 ```bash
 npm run dev
 ```
 
+The application runs on:
+
+* Frontend: `http://localhost:5173`
+* Backend: `http://localhost:5000`
+
 ---
 
-## 📱 Running on Multiple Devices (Phones, Tablets)
+## 📱 Multiple Device Access
 
-The application is configured to run across different devices dynamically. If you want someone to access the kiosk from their phone or another device on the same Wi-Fi network:
+To access the kiosk from another device on the same Wi-Fi:
 
-1. Find your computer's local IP address (run `ipconfig` in Command Prompt on Windows). Let's say it is `192.168.1.15`.
-2. Open `http://192.168.1.15:5173` on the mobile device's browser.
-3. The frontend will load and automatically route API calls to the server at `http://192.168.1.15:5000`.
-4. When the video is ready, the generated QR code on Screen 6 will automatically point to `http://192.168.1.15:5000/download.html?id=<user-id>`, allowing mobile users to instantly watch and download their MP4 file!
+1. Run `ipconfig` and find your computer's local IP.
+2. Open the following on the phone/tablet:
+
+```text
+http://YOUR-IP:5173
+```
+
+The generated QR code will provide access to the final MP4 video through the backend download page.
 
 ---
 
 ## 📂 Project Structure
 
-- `client/`: React + Vite + Tailwind CSS frontend application.
-  - Contains screens 1 to 6 inside `src/components/` and `src/App.jsx`.
-- `server/`: Node.js + Express backend application.
-  - `server.js`: Server entry, CORS, Express middleware.
-  - `routes/users.js`: Endpoints to register users, update details, save quiz answers, and poll status.
-  - `services/videoService.js`: Renders portrait zoom-motion videos using FFmpeg or Replicate SVD.
-  - `public/`: Stores static assets including photo uploads, generated videos, frames, and the `download.html` mobile landing page.
+```text
+project-root/
+├── client/                 # React + Vite frontend
+│   ├── src/
+│   │   ├── components/     # Kiosk screens
+│   │   └── App.jsx
+│   └── ...
+│
+├── server/                 # Node.js + Express backend
+│   ├── server.js
+│   ├── routes/
+│   │   └── users.js
+│   ├── services/
+│   │   └── videoService.js
+│   └── public/              # Photos, videos, frames & download page
+│
+├── .env
+├── package.json
+└── README.md
+```
+
+---
+
+## 🎬 Video Generation
+
+### Local Mode
+
+```env
+VIDEO_GENERATION_MODE=local
+```
+
+Uses FFmpeg for fast local video generation.
+
+### AI Mode
+
+```env
+VIDEO_GENERATION_MODE=AI
+```
+
+Uses Replicate SVD for cloud-based AI video generation and requires a Replicate API token.
+
+---
+
+## 🔄 Application Flow
+
+**Photo Capture → Theme Frame → User Details → Quiz → Video Generation → QR Code → MP4 Download**
+
+---
+
+## 👨‍💻 Developer
+
+**Ankit Chaudhary**
+
+GitHub: **Ankit187Kumar**
+
+---
+
+## 📄 License
+
+Created for kiosk, exhibition, and interactive digital experience applications.
