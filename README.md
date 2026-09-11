@@ -20,24 +20,7 @@ For Windows, install FFmpeg and add its `bin` folder to the system `Path`.
 
 ## ⚙️ Configuration
 
-Create a `.env` file in the project root:
 
-```env
-PORT=5000
-
-MONGODB_URI=mongodb+srv://neeshu:<db_password>@neeshu.cwxzomm.mongodb.net/photobooth?retryWrites=true&w=majority&appName=neeshu
-
-VIDEO_GENERATION_MODE=local
-
-REPLICATE_API_TOKEN=your_replicate_token_here
-
-CLIENT_URL=http://localhost:5173
-SERVER_URL=http://localhost:5000
-```
-
-> Keep your `.env` file private and never commit API keys to GitHub.
-
----
 
 ## 🚀 How to Run
 
